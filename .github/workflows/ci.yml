@@ -20,5 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: dtolnay/rust-toolchain@1.85
+      # Version as an input, not a tag, so Dependabot doesn't "upgrade" the MSRV.
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.85"
       - run: cargo check -p aiwire --all-features
