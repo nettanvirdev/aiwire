@@ -37,3 +37,14 @@ To check performance, run `python bench/run.py` before and after your change on 
 machine. See [docs/11-benchmarks.md](docs/11-benchmarks.md).
 
 By contributing, you agree your work is released under the [MIT license](LICENSE).
+
+## Releasing (maintainers)
+
+CI runs only on version tags. To release:
+
+1. Bump `version` in `Cargo.toml` and move `[Unreleased]` notes in `CHANGELOG.md` under the new version.
+2. Run the checks above locally, commit, push.
+3. `git tag v0.1.1 && git push origin v0.1.1`
+
+The tag runs tests on Linux, Windows, macOS and Rust 1.85, then publishes to crates.io and
+creates the GitHub release. The tag must match the `Cargo.toml` version.
