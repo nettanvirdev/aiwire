@@ -40,15 +40,26 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
-      - name: Tag must match Cargo.toml version
+      - name: Tag must match Cargo.toml version; skip publish if already on crates.io
+        id: version
         run: |
           version=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "aiwire") | .version')
           test "v$version" = "$GITHUB_REF_NAME" || { echo "tag $GITHUB_REF_NAME != Cargo.toml v$version"; exit 1; }
+          status=$(curl -s -o /dev/null -w '%{http_code}' -A "aiwire-ci (github.com/${{ github.repository }})" \
+            "https://crates.io/api/v1/crates/aiwire/$version")
+          echo "published=$([ "$status" = 200 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
       - uses: rust-lang/crates-io-auth-action@v1
+        if: steps.version.outputs.published != 'true'
         id: auth
       - run: cargo publish -p aiwire
+        if: steps.version.outputs.published != 'true'
         env:
           CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
-      - run: gh release create "$GITHUB_REF_NAME" --generate-notes
+      - name: GitHub release with this version's CHANGELOG section
+        run: |
+          awk -v v="${{ steps.version.outputs.version }}" \
+            '/^\[[^]]*\]: / { exit } /^## \[/ { on = index($0, "[" v "]") > 0; next } on' CHANGELOG.md > notes.md
+          gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file notes.md
         env:
           GH_TOKEN: ${{ github.token }}
