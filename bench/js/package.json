@@ -1,0 +1,8 @@
+{
+  "name": "aiwire-bench-js",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "openai": "^7.42.0"
+  }
+}

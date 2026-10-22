@@ -334,6 +334,9 @@ mod tests {
         let c = Client::new(Provider::ANTHROPIC, "k");
         assert_eq!(c.protocol(), Protocol::Anthropic);
         assert!(c.inner.chat_headers.contains_key("x-api-key") && !c.inner.chat_headers.contains_key(AUTHORIZATION));
+        let c = Client::builder().provider(Provider::ANTHROPIC).api_key("k").header("anthropic-version", "v2").build();
+        let h = &c.unwrap().inner.chat_headers;
+        assert_eq!(h.get_all("anthropic-version").iter().collect::<Vec<_>>(), ["v2"]);
     }
 
     #[test]
