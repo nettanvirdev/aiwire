@@ -15,6 +15,10 @@ aiwire = "0.1"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
 
+Why Tokio: aiwire's methods are `async`, and its HTTP layer runs on Tokio. `rt-multi-thread` is
+the runtime; `macros` gives you `#[tokio::main]`. If your app already uses Tokio (axum,
+actix-web, most Rust servers), skip `cargo add tokio`: aiwire runs on the runtime you have.
+
 Minimum Rust version: 1.85.
 
 ## Features

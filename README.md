@@ -36,6 +36,8 @@ cargo add aiwire
 cargo add tokio --features macros,rt-multi-thread
 ```
 
+Already using Tokio (axum, actix-web, most Rust servers)? Skip the second line: aiwire runs on the runtime you already have.
+
 Features: `rustls` (default), `native-tls`, `mcp`.
 
 ## Streaming
