@@ -14,4 +14,7 @@ Step by step, from installing the crate to every feature.
 10. [Errors](10-errors.md)
 11. [Benchmarks](11-benchmarks.md)
 
-API reference: run `cargo doc --open --all-features`, or see docs.rs once published.
+For AI coding agents: [skills/aiwire/SKILL.md](skills/aiwire/SKILL.md) is the whole API and every
+example in one file. Point an agent at it, or copy the `aiwire` folder into your agent's skills directory.
+
+API reference: https://docs.rs/aiwire (or `cargo doc --open --all-features`).
