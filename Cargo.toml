@@ -1,0 +1,43 @@
+[package]
+name = "aiwire"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+description = "Fast, lean async client for any OpenAI- or Anthropic-compatible LLM API: chat, streaming, tools, MCP, embeddings."
+license = "MIT"
+readme = "README.md"
+keywords = ["llm", "openai", "anthropic", "mcp", "ai"]
+categories = ["api-bindings", "asynchronous", "web-programming::http-client"]
+include = ["src/**", "examples/**", "Cargo.toml", "README.md", "LICENSE", "CHANGELOG.md"]
+# repository = "https://github.com/OWNER/aiwire"
+
+[features]
+default = ["rustls"]
+## TLS via rustls (default).
+rustls = ["reqwest/rustls"]
+## TLS via the platform's native stack instead of rustls.
+native-tls = ["reqwest/native-tls"]
+## Model Context Protocol client (stdio + streamable HTTP).
+mcp = ["tokio/process", "tokio/io-util", "tokio/sync"]
+
+[dependencies]
+bytes = "1.6"
+futures-core = "0.3.30"
+http-body = "1"
+reqwest = { version = "0.13", default-features = false, features = ["http2"] }
+serde = { version = "1.0.200", features = ["derive"] }
+serde_json = { version = "1.0.120", features = ["raw_value"] }
+tokio = { version = "1.38", features = ["time"] }
+
+[dev-dependencies]
+tokio = { version = "1.38", features = ["macros", "rt-multi-thread", "net", "io-util"] }
+
+[package.metadata.docs.rs]
+all-features = true
+
+[[example]]
+name = "mcp"
+required-features = ["mcp"]
+
+[workspace]
+members = ["bench"]

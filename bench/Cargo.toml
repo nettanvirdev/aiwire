@@ -1,0 +1,9 @@
+[package]
+name = "aiwire-bench"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+aiwire = { path = ".." }
+tokio = { version = "1.38", features = ["rt-multi-thread", "net", "io-util", "macros", "time"] }
