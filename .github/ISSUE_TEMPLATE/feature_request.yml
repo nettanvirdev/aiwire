@@ -1,0 +1,16 @@
+name: Feature request
+description: A new provider, parameter or capability
+labels: [enhancement]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What do you need
+      description: The problem you're solving. For a new provider, link its API docs.
+    validations:
+      required: true
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Current workaround
+      description: e.g. `.extra(...)`, a custom `Provider`, or a `base_url`.

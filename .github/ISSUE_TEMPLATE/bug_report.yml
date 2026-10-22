@@ -1,0 +1,29 @@
+name: Bug report
+description: Something doesn't work as documented
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, what you got. Include the full error.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal code
+      description: The smallest snippet that shows the problem. Remove API keys.
+      render: rust
+  - type: input
+    id: provider
+    attributes:
+      label: Provider and protocol
+      placeholder: e.g. OpenRouter, Protocol::Anthropic
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      placeholder: aiwire 0.1.0, rustc 1.90, Linux
+    validations:
+      required: true
