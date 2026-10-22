@@ -19,3 +19,6 @@ All notable changes are listed here. The format follows
 - Embeddings into one contiguous buffer.
 - MCP client over stdio and Streamable HTTP (feature `mcp`).
 - Retries with backoff and `retry-after`, timeouts, custom headers, bring-your-own `reqwest::Client`.
+
+[Unreleased]: https://github.com/nettanvirdev/aiwire/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/nettanvirdev/aiwire/releases/tag/v0.1.0

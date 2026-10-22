@@ -1,5 +1,10 @@
 # aiwire
 
+[![crates.io](https://img.shields.io/crates/v/aiwire.svg)](https://crates.io/crates/aiwire)
+[![docs.rs](https://img.shields.io/docsrs/aiwire)](https://docs.rs/aiwire)
+[![CI](https://github.com/nettanvirdev/aiwire/actions/workflows/ci.yml/badge.svg)](https://github.com/nettanvirdev/aiwire/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/nettanvirdev/aiwire/blob/main/LICENSE)
+
 Fast, lean async Rust client for any **OpenAI-compatible** or **Anthropic-compatible** LLM API.
 Chat, streaming, tool calling, MCP and embeddings, with one small API.
 
@@ -118,20 +123,20 @@ Same workloads, same local mock server, Windows 11, 32 logical CPUs
 | CPU time for 20,000 chats | **0.70 s** | **0.73 s** | 7.6 s | 58.9 s |
 
 On a single thread, aiwire handles ~7× the streaming throughput of openai-node with ~10× less
-memory. Full table with p50/p99 latency: [bench/RESULTS.md](bench/RESULTS.md). Absolute numbers
+memory. Full table with p50/p99 latency: [bench/RESULTS.md](https://github.com/nettanvirdev/aiwire/blob/main/bench/RESULTS.md). Absolute numbers
 vary between runs; the ratios hold. A release binary using aiwire is ~5 MB; the crate itself
 is 40 KB.
 
 All SDKs hit the same local mock server: no API keys, no tokens, no money. Reproduce with
-`python bench/run.py` ([how](docs/11-benchmarks.md)).
+`python bench/run.py` ([how](https://github.com/nettanvirdev/aiwire/blob/main/docs/11-benchmarks.md)).
 
 ## Docs
 
-Step-by-step guide in [docs/](docs/README.md): installation, providers, streaming, tools, MCP,
+Step-by-step guide in [docs/](https://github.com/nettanvirdev/aiwire/blob/main/docs/README.md): installation, providers, streaming, tools, MCP,
 embeddings, parameters, configuration, errors.
 
 Examples: `cargo run --example chat` (also `stream`, `tools`, `embed`, `mcp --features mcp`).
 
 ## License
 
-MIT, see [LICENSE](LICENSE).
+MIT, see [LICENSE](https://github.com/nettanvirdev/aiwire/blob/main/LICENSE).

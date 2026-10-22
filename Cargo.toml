@@ -9,7 +9,9 @@ readme = "README.md"
 keywords = ["llm", "openai", "anthropic", "mcp", "ai"]
 categories = ["api-bindings", "asynchronous", "web-programming::http-client"]
 include = ["src/**", "examples/**", "Cargo.toml", "README.md", "LICENSE", "CHANGELOG.md"]
-# repository = "https://github.com/OWNER/aiwire"
+repository = "https://github.com/nettanvirdev/aiwire"
+homepage = "https://github.com/nettanvirdev/aiwire"
+documentation = "https://docs.rs/aiwire"
 
 [features]
 default = ["rustls"]
