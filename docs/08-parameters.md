@@ -12,6 +12,7 @@ These map to the right field on each protocol:
 | `.stop(s)` (repeatable) | `stop` | `stop_sequences` |
 | `.tool(...)`, `.tools(...)` | `tools` | `tools` |
 | `.tool_choice(...)` | `tool_choice` | `tool_choice` |
+| `.cache(Cache::FiveMinutes)` | (automatic on the provider) | `cache_control` breakpoints |
 
 ## Everything else: `extra`
 
@@ -43,11 +44,27 @@ Request::new("meta-llama/llama-4-scout")
 An `extra` key with the same name as a common parameter is sent after it; most servers keep
 the last value.
 
+## Several answers and log probabilities (OpenAI protocol)
+
+```rust
+let res = client.chat(Request::new("gpt-4.1-mini").user("Name a color").extra("n", 3)).await?;
+println!("{}", res.text);                       // first choice
+for c in &res.other_choices { println!("{}", c.text); }
+
+let res = client
+    .chat(Request::new("gpt-4.1-mini").user("Hi").extra("logprobs", true).extra("top_logprobs", 3))
+    .await?;
+for lp in &res.logprobs {
+    println!("{:?} {:.3} alternatives: {:?}", lp.token, lp.logprob, lp.top);
+}
+```
+
 ## Reasoning output
 
 If a model returns reasoning (`reasoning_content` / `reasoning` on OpenAI-style APIs,
-`thinking` blocks on Anthropic), it is in `res.reasoning`, or `Event::Reasoning` when
-streaming.
+`thinking` blocks on Anthropic, reasoning summaries on Responses), it is in `res.reasoning`,
+or `Event::Reasoning` when streaming. `res.usage.reasoning_tokens` counts it when the provider
+reports it. More in [Reasoning and caching](13-reasoning-and-caching.md).
 
 ## Request fields are public
 

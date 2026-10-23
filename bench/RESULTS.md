@@ -6,15 +6,15 @@ Server: local mock (bench/src/bin/mock.rs), plain HTTP/1.1 on 127.0.0.1. Workloa
 
 | workload | SDK | req/s | p50 ms | p99 ms | peak memory MB | CPU s |
 |---|---|--:|--:|--:|--:|--:|
-| chat | aiwire (Rust, 1 thread) | 28910 | 2.23 | 3.47 | 11.1 | 0.70 |
-| chat | aiwire (Rust, 4 threads) | 86393 | 0.70 | 1.45 | 13.2 | 0.73 |
-| chat | openai-python | 345 | 126.26 | 886.06 | 100.5 | 58.92 |
-| chat | openai-node | 3830 | 15.93 | 35.07 | 277.0 | 7.59 |
-| stream | aiwire (Rust, 1 thread) | 2987 | 18.40 | 29.70 | 18.6 | 1.00 |
-| stream | aiwire (Rust, 4 threads) | 10597 | 5.34 | 17.04 | 18.7 | 1.16 |
-| stream | openai-python | 39 | 1652.15 | 1903.64 | 169.9 | 77.69 |
-| stream | openai-node | 429 | 142.49 | 226.61 | 193.1 | 8.25 |
-| embed | aiwire (Rust, 1 thread) | 1028 | 13.71 | 21.25 | 14.1 | 0.97 |
-| embed | aiwire (Rust, 4 threads) | 4836 | 3.13 | 6.22 | 15.8 | 0.78 |
-| embed | openai-python | 20 | 703.47 | 2487.69 | 133.6 | 51.80 |
-| embed | openai-node | 463 | 32.38 | 66.99 | 296.5 | 2.91 |
+| chat | aiwire (Rust, 1 thread) | 46147 | 1.19 | 2.65 | 10.8 | 0.44 |
+| chat | aiwire (Rust, 4 threads) | 100705 | 0.59 | 1.36 | 12.0 | 0.44 |
+| chat | openai-python | 593 | 72.67 | 523.20 | 96.7 | 34.78 |
+| chat | openai-node | 6177 | 9.39 | 23.33 | 220.8 | 4.83 |
+| stream | aiwire (Rust, 1 thread) | 3486 | 17.68 | 24.24 | 18.0 | 0.84 |
+| stream | aiwire (Rust, 4 threads) | 12942 | 4.74 | 10.65 | 17.7 | 0.92 |
+| stream | openai-python | 61 | 1026.75 | 1189.01 | 162.2 | 49.31 |
+| stream | openai-node | 610 | 101.09 | 154.32 | 242.1 | 5.84 |
+| embed | aiwire (Rust, 1 thread) | 1573 | 9.89 | 18.47 | 14.2 | 0.64 |
+| embed | aiwire (Rust, 4 threads) | 5784 | 2.70 | 5.08 | 14.8 | 0.67 |
+| embed | openai-python | 29 | 402.61 | 2577.93 | 127.2 | 34.30 |
+| embed | openai-node | 663 | 23.04 | 46.75 | 293.5 | 1.95 |

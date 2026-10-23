@@ -66,6 +66,25 @@ req.tool_choice(ToolChoice::Tool("get_weather".into())) // must call this one
 
 Parallel tool calls work: you get every call in `tool_calls` and answer each one.
 
+## Thinking models in tool loops
+
+`res.into_message()` keeps the model's reasoning on the assistant turn and aiwire sends it back
+the way each protocol needs: signed `thinking` blocks on Anthropic (required when thinking is
+on), `reasoning_content` for DeepSeek, Moonshot and Z.ai. Always push `res.into_message()`
+rather than rebuilding the assistant message by hand. See
+[Reasoning and caching](13-reasoning-and-caching.md).
+
+## Images in tool results
+
+On the Anthropic protocol a tool result can carry images:
+
+```rust
+use aiwire::{Image, Message};
+req = req.message(Message::tool(call.id.clone(), "screenshot attached").image(Image::file("shot.png")?));
+```
+
+The OpenAI protocols only accept text there and return `Error::Config` if you try.
+
 ## Streaming with tools
 
 Each finished call arrives as `Event::ToolCall(call)`; `stream.response().await?.tool_calls`

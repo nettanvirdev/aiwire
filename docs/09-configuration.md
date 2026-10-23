@@ -14,6 +14,8 @@ let client = Client::builder()
     .header("OpenAI-Organization", "org-...") // extra header on every request
     .max_retries(3)                      // default 2
     .timeout(Duration::from_secs(120))   // default 10 min, non-streaming only
+    .stream_idle_timeout(Duration::from_secs(60)) // default 5 min of silence ends a stream
+    .max_concurrent_requests(16)         // default unlimited
     .build()?;
 ```
 
@@ -21,9 +23,12 @@ let client = Client::builder()
 
 | Setting | Default | Why |
 |---|---|---|
-| Retries | 2 | on connection errors, 408, 409, 429, 5xx |
+| Retries | 2 | on connection errors, timeouts, 408, 409, 429, 5xx; `x-should-retry` is honoured |
 | Backoff | 0.5 s, 1 s, 2 s … ±12% jitter | honours `retry-after` / `retry-after-ms` up to 60 s |
-| Request timeout | 10 min | long reasoning answers; streams have none |
+| Request timeout | 10 min | long reasoning answers (non-streaming) |
+| Stream idle timeout | 5 min | a stalled stream or a server that never answers fails instead of hanging |
+| Concurrency limit | none | set `max_concurrent_requests` to stay under provider rate limits |
+| Redirects | 307/308 followed, 301/302 reported | a 301 would turn the POST into a GET; the error names the new URL |
 | Connect timeout | 10 s | fail fast on dead hosts |
 | Idle connections | kept 90 s | reuse TLS connections between calls |
 | TCP | `nodelay`, keepalive 30 s | low latency, long streams survive NAT |
@@ -57,7 +62,8 @@ let client = Client::builder().provider(Provider::GROQ).http_client(http).build(
 - Build one `Client` and `clone()` it into tasks: clones share the pool.
 - Pass `&req` to avoid cloning big conversations.
 - Use string literals for fixed prompts: they are stored without copying.
-- Run requests concurrently with `tokio::spawn` or `futures::future::join_all`; there is no
-  client-side concurrency limit.
+- Run requests concurrently with `tokio::spawn` or `futures::future::join_all`. To cap how many
+  run at once (rate limits, a small local server), set `max_concurrent_requests(n)`: extra
+  calls wait for a free slot, and a stream keeps its slot until it ends or is dropped.
 
-Next: [Errors](10-errors.md).
+Next: [Errors and debugging](10-errors.md).

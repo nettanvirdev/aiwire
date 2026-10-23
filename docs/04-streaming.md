@@ -65,7 +65,35 @@ let texts: Vec<_> = client.stream(&req).await?
 ## Errors mid-stream
 
 If the server sends an error event (e.g. Anthropic `overloaded_error`), `next()` yields
-`Err(Error::Api { status: 0, .. })`. Retries only happen before the stream starts.
+`Err(Error::Api(e))` with `e.status == 0` and the provider's error type in `e.kind`. Retries
+only happen before the stream starts; `err.is_retryable()` tells you whether starting over is
+worth it. Malformed data from the server ends the stream with `kind = "invalid_response"` and
+the offending line in `e.body`.
+
+## Stalled streams
+
+A stream that goes quiet ends with `Error::Timeout` after 5 minutes without a single byte
+(also while waiting for the response headers). Lower it to fail fast, or raise it for models
+that think silently for a long time before the first token:
+
+```rust
+let client = Client::builder()
+    .provider(Provider::OPENAI)
+    .stream_idle_timeout(std::time::Duration::from_secs(60))
+    .build()?;
+```
+
+Servers that send keep-alive comments or pings never trip it while they are alive.
+
+## Request id
+
+`stream.request_id()` (and `res.request_id` on the final response) is the provider's id for
+this call; include it when reporting a problem to them.
+
+## Several choices
+
+With `.extra("n", 3)` on the OpenAI protocol, events are emitted for the first choice and the
+others are assembled into `res.other_choices`.
 
 ## Memory
 

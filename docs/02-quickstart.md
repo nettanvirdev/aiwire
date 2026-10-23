@@ -23,7 +23,8 @@ That's the whole API shape:
 
 - **`Client`** knows *where* to send requests and in which wire format.
 - **`Request`** says *what* to ask. The model is any string; there is no fixed model list.
-- **`Response`** holds `text`, `reasoning`, `tool_calls`, `finish_reason` and `usage`.
+- **`Response`** holds `text`, `reasoning`, `tool_calls`, `finish_reason`, `usage` and the
+  provider's `request_id`.
 
 ## Three ways to make a client
 
@@ -67,6 +68,7 @@ let res = client.chat(&req).await?;
 | `.user(text)` | user |
 | `.assistant(text)` | earlier model answer |
 | `.tool_result(call_id, text)` | result of a tool call |
+| `.image(Image)` | adds an image to the last user message ([Images](12-images.md)) |
 | `.message(Message)` | any prebuilt message |
 
 Text can be a `&'static str` (stored without copying) or a `String`.

@@ -11,8 +11,10 @@ Step by step, from installing the crate to every feature.
 7. [Embeddings](07-embeddings.md)
 8. [Parameters and provider-specific options](08-parameters.md)
 9. [Client configuration: retries, timeouts, headers, proxies](09-configuration.md)
-10. [Errors](10-errors.md)
+10. [Errors and debugging](10-errors.md)
 11. [Benchmarks](11-benchmarks.md)
+12. [Images and other inputs](12-images.md)
+13. [Reasoning and prompt caching](13-reasoning-and-caching.md)
 
 For AI coding agents: [skills/aiwire/SKILL.md](skills/aiwire/SKILL.md) is the whole API and every
 example in one file. Point an agent at it, or copy the `aiwire` folder into your agent's skills directory.

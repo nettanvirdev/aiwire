@@ -11,7 +11,7 @@ Or in `Cargo.toml`:
 
 ```toml
 [dependencies]
-aiwire = "0.1"
+aiwire = "0.2"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
 
@@ -27,7 +27,8 @@ Minimum Rust version: 1.85.
 |---|---|---|
 | `rustls` | yes | TLS with rustls. |
 | `native-tls` | no | TLS with the OS stack (SChannel, Secure Transport, OpenSSL) instead. |
-| `mcp` | no | [MCP client](06-mcp.md) for stdio and HTTP servers. |
+| `mcp` | no | [MCP client](06-mcp.md) for stdio and HTTP servers, with OAuth. |
+| `tracing` | no | [Logs](10-errors.md#logging-with-tracing) every request, retry and stream through `tracing`. |
 
 Enable MCP:
 
@@ -38,7 +39,7 @@ cargo add aiwire --features mcp
 Use native TLS instead of rustls:
 
 ```toml
-aiwire = { version = "0.1", default-features = false, features = ["native-tls"] }
+aiwire = { version = "0.2", default-features = false, features = ["native-tls"] }
 ```
 
 ## API keys

@@ -1,10 +1,13 @@
 //! Fast, lean async client for any OpenAI- or Anthropic-compatible LLM API.
 //!
-//! - One [`Client`], two wire formats ([`Protocol::OpenAi`], [`Protocol::Anthropic`]).
+//! - One [`Client`], three wire formats ([`Protocol::OpenAi`], [`Protocol::Anthropic`],
+//!   [`Protocol::Responses`]).
 //! - Built-in [`Provider`] table (OpenAI, Anthropic, Groq, Cerebras, OpenRouter, MiniMax, …);
 //!   asking a provider for a protocol it does not speak is an error.
 //! - Model names are plain strings, never a fixed list.
-//! - Chat, streaming, tool calls, embeddings, and MCP tools (feature `mcp`).
+//! - Chat, streaming, tool calls, images, reasoning, prompt caching, embeddings, and MCP tools
+//!   (feature `mcp`). Errors carry status, provider error type, request id and rate-limit headers;
+//!   feature `tracing` logs every request, retry and stream.
 //!
 //! ```no_run
 //! use aiwire::{Client, Event, Provider, Request};
@@ -34,13 +37,17 @@ mod error;
 pub mod mcp;
 mod openai;
 mod provider;
+mod responses;
 mod stream;
 mod types;
 
 pub use client::{Client, ClientBuilder};
 pub use embed::{EmbedRequest, Embeddings};
-pub use error::{Error, Result};
+pub use error::{ApiError, Error, Result};
 pub use provider::{Protocol, Provider};
 pub use serde_json::json;
 pub use stream::ChatStream;
-pub use types::{Event, FinishReason, Message, Request, Response, Role, Text, Tool, ToolCall, ToolChoice, Usage};
+pub use types::{
+    Cache, Choice, Event, FinishReason, Image, Logprob, Message, Part, Request, Response, Role, Text, Thinking, Tool,
+    ToolCall, ToolChoice, Usage,
+};

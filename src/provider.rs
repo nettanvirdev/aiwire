@@ -6,6 +6,8 @@ pub enum Protocol {
     OpenAi,
     /// Anthropic Messages (`/v1/messages`).
     Anthropic,
+    /// OpenAI Responses (`/responses`), on the provider's OpenAI base URL.
+    Responses,
 }
 
 /// A known API host and the protocols it speaks.
@@ -31,6 +33,11 @@ pub struct Provider {
     pub anthropic_bearer: bool,
     /// JSON field for the output token limit on the OpenAI protocol.
     pub max_tokens_field: &'static str,
+    /// Serves the OpenAI Responses API (`/responses`).
+    pub responses: bool,
+    /// OpenAI protocol: send reasoning back as `reasoning_content` on assistant turns.
+    /// DeepSeek, Moonshot and Z.ai need it in tool loops; strict servers reject the field.
+    pub send_reasoning: bool,
 }
 
 const fn openai(name: &'static str, url: &'static str, env: &'static str, embeddings: bool) -> Provider {
@@ -43,6 +50,8 @@ const fn openai(name: &'static str, url: &'static str, env: &'static str, embedd
         embeddings,
         anthropic_bearer: false,
         max_tokens_field: "max_tokens",
+        responses: false,
+        send_reasoning: false,
     }
 }
 
@@ -53,11 +62,21 @@ impl Provider {
         self
     }
 
+    const fn responses(mut self) -> Self {
+        self.responses = true;
+        self
+    }
+
+    const fn send_reasoning(mut self) -> Self {
+        self.send_reasoning = true;
+        self
+    }
+
     // Verified against provider docs on 2026-10-22.
     /// OpenAI.
     pub const OPENAI: Provider = Provider {
         max_tokens_field: "max_completion_tokens",
-        ..openai("openai", "https://api.openai.com/v1", "OPENAI_API_KEY", true)
+        ..openai("openai", "https://api.openai.com/v1", "OPENAI_API_KEY", true).responses()
     };
     /// Anthropic. Defaults to the native Messages protocol.
     pub const ANTHROPIC: Provider = Provider {
@@ -66,12 +85,13 @@ impl Provider {
             .anthropic("https://api.anthropic.com", false)
     };
     /// Groq.
-    pub const GROQ: Provider = openai("groq", "https://api.groq.com/openai/v1", "GROQ_API_KEY", false);
+    pub const GROQ: Provider = openai("groq", "https://api.groq.com/openai/v1", "GROQ_API_KEY", false).responses();
     /// Cerebras.
     pub const CEREBRAS: Provider = openai("cerebras", "https://api.cerebras.ai/v1", "CEREBRAS_API_KEY", false);
     /// OpenRouter.
     pub const OPENROUTER: Provider = openai("openrouter", "https://openrouter.ai/api/v1", "OPENROUTER_API_KEY", true)
-        .anthropic("https://openrouter.ai/api", true);
+        .anthropic("https://openrouter.ai/api", true)
+        .responses();
     /// MiniMax (international).
     pub const MINIMAX: Provider = openai("minimax", "https://api.minimax.io/v1", "MINIMAX_API_KEY", false)
         .anthropic("https://api.minimax.io/anthropic", true);
@@ -83,13 +103,16 @@ impl Provider {
         .anthropic("https://api.gmi-serving.com", true);
     /// DeepSeek.
     pub const DEEPSEEK: Provider = openai("deepseek", "https://api.deepseek.com", "DEEPSEEK_API_KEY", false)
-        .anthropic("https://api.deepseek.com/anthropic", false);
+        .anthropic("https://api.deepseek.com/anthropic", false)
+        .send_reasoning();
     /// Moonshot / Kimi (international).
     pub const MOONSHOT: Provider = openai("moonshot", "https://api.moonshot.ai/v1", "MOONSHOT_API_KEY", false)
-        .anthropic("https://api.moonshot.ai/anthropic", true);
+        .anthropic("https://api.moonshot.ai/anthropic", true)
+        .send_reasoning();
     /// Z.ai (GLM).
     pub const ZAI: Provider = openai("zai", "https://api.z.ai/api/paas/v4", "ZAI_API_KEY", false)
-        .anthropic("https://api.z.ai/api/anthropic", true);
+        .anthropic("https://api.z.ai/api/anthropic", true)
+        .send_reasoning();
     /// Together AI.
     pub const TOGETHER: Provider = openai("together", "https://api.together.ai/v1", "TOGETHER_API_KEY", true);
     /// Fireworks AI.
@@ -99,7 +122,7 @@ impl Provider {
     /// Mistral.
     pub const MISTRAL: Provider = openai("mistral", "https://api.mistral.ai/v1", "MISTRAL_API_KEY", true);
     /// xAI (Grok).
-    pub const XAI: Provider = openai("xai", "https://api.x.ai/v1", "XAI_API_KEY", false);
+    pub const XAI: Provider = openai("xai", "https://api.x.ai/v1", "XAI_API_KEY", false).responses();
     /// Google Gemini (OpenAI-compatible endpoint).
     pub const GEMINI: Provider =
         openai("gemini", "https://generativelanguage.googleapis.com/v1beta/openai", "GEMINI_API_KEY", true);
@@ -117,7 +140,7 @@ impl Provider {
         .anthropic("https://api.sambanova.ai", false);
     /// Ollama on localhost. No API key.
     pub const OLLAMA: Provider =
-        openai("ollama", "http://localhost:11434/v1", "", true).anthropic("http://localhost:11434", false);
+        openai("ollama", "http://localhost:11434/v1", "", true).anthropic("http://localhost:11434", false).responses();
 
     /// Every built-in provider.
     pub const ALL: &'static [Provider] = &[
@@ -154,6 +177,7 @@ impl Provider {
         match protocol {
             Protocol::OpenAi => self.openai_url,
             Protocol::Anthropic => self.anthropic_url,
+            Protocol::Responses => self.openai_url.filter(|_| self.responses),
         }
     }
 
